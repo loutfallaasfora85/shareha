@@ -166,11 +166,6 @@ export default function CheckoutPage() {
     setLoading(false);
     setCustomer({ name: fullName, nationalId: "", whatsapp: customer.phone, address, installmentType: "full", months: 0, downPayment: 0 } as CustomerInfo);
     setShowModal(false);
-    track("PlaceAnOrder", {
-      contents: items.map(i => ({ content_id: i.product._id, content_type: "product" as const, content_name: i.product.name })),
-      value: finalTotal,
-      currency: "SAR",
-    });
     setShowSuccess(true);
   };
 
