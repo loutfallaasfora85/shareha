@@ -13,7 +13,6 @@ import CheckoutPayment from "./CheckoutPayment";
 import CustomerSection, { validateCustomer } from "./CustomerSection";
 import type { CustomerData } from "./CustomerSection";
 import { useAuthStore } from "../store/authStore";
-import { identify, track } from "../lib/useTikTokEvents";
 import { initializeSnapPixel } from "../lib/snapPixel";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
