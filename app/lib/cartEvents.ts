@@ -1,5 +1,6 @@
 import type { Product } from '../components/products/types';
 import { trackSnapProduct } from './snapPixel';
+import { trackProductEvent } from './productEvents';
 
 // Called once, after the cart store has accepted an addition.
 export function trackCartAddition(product: Product, quantity: number) {
@@ -11,4 +12,5 @@ export function trackCartAddition(product: Product, quantity: number) {
       !Number.isInteger(quantity) || quantity < 1) return;
 
   trackSnapProduct('ADD_CART', product, quantity);
+  trackProductEvent('add_to_cart', product, quantity);
 }

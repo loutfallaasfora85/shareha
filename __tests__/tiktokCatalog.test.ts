@@ -1,74 +1,36 @@
-import { track } from '../app/lib/useTikTokEvents';
-import { TIKTOK_PIXEL_IDS } from '../app/lib/tikTokConfig';
+import { trackProductEvent } from '../app/lib/productEvents';
+import type { Product } from '../app/components/products/types';
 
-const productEvent = {
-  contents: [{ content_id: '6a144e7221998fa635f10360', content_type: 'product' as const,
-    content_name: 'Phone', quantity: 2, price: 150 }],
-  value: 300,
-  currency: 'SAR',
-};
+const product = { _id: '6a144e7221998fa635f10360', name: 'Router',
+  originalPrice: 900, salePrice: 820, price: 900 } as Product;
+afterEach(() => { delete window.dataLayer; });
 
-afterEach(() => { delete window.ttq; });
-
-test.each(['ViewContent', 'AddToCart'])('%s sends catalog identifiers and type on the event', (event) => {
-  const send = jest.fn();
-  window.ttq = { track: send, identify: jest.fn() };
-  track(event, productEvent);
-  expect(send).toHaveBeenCalledTimes(1);
-  expect(send).toHaveBeenCalledWith(event, {
-    ...productEvent, content_type: 'product',
-    content_id: productEvent.contents[0].content_id,
-    content_ids: [productEvent.contents[0].content_id], content_name: 'Phone',
-  });
+test.each(['view_item', 'add_to_cart'] as const)('%s queues catalog IDs before GTM loads', event => {
+  expect(trackProductEvent(event, product, 2)).toBe(true);
+  expect(window.dataLayer).toEqual([
+    { ecommerce: null },
+    { event, ecommerce: { currency: 'SAR', value: 1640,
+      items: [{ item_id: product._id, item_name: 'Router', price: 820, quantity: 2 }] } },
+  ]);
+  expect('ttq' in window).toBe(false);
+  expect(document.querySelector('script[src*="analytics.tiktok.com"]')).toBeNull();
 });
 
-test('early product views are retained before the pixel bootstrap', () => {
-  track('ViewContent', productEvent);
-  expect(window.ttq).toEqual(expect.arrayContaining([
-    ['track', 'ViewContent', expect.objectContaining({ content_type: 'product', value: 300 })],
-  ]));
+test('preserves the GTM queue and clears stale ecommerce data between events', () => {
+  const queue = [{ event: 'gtm.js' }];
+  window.dataLayer = queue;
+  trackProductEvent('view_item', product);
+  trackProductEvent('add_to_cart', product, 3);
+  expect(window.dataLayer).toBe(queue);
+  expect(queue).toHaveLength(5);
+  expect(queue[0]).toEqual({ event: 'gtm.js' });
+  expect(queue[3]).toEqual({ ecommerce: null });
 });
 
-test('dispatch targets only the configured pixels', () => {
-  const send = jest.fn();
-  const instance = jest.fn((_id: string) => ({ track: send, identify: jest.fn() }));
-  window.ttq = { track: jest.fn(), identify: jest.fn(), instance };
-  track('AddToCart', productEvent);
-  expect(instance.mock.calls.map(([id]) => id)).toEqual(TIKTOK_PIXEL_IDS);
-  expect(send).toHaveBeenCalledTimes(TIKTOK_PIXEL_IDS.length);
-});
-
-test('default configuration does not dispatch to an unloaded second pixel', () => {
-  const previous = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID_2;
-  delete process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID_2;
-  try {
-    jest.isolateModules(() => {
-      const config = require('../app/lib/tikTokConfig');
-      expect(config.TIKTOK_PIXEL_IDS).toHaveLength(1);
-    });
-  } finally {
-    if (previous === undefined) delete process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID_2;
-    else process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID_2 = previous;
-  }
-});
-
-test('invalid or incomplete catalog events are not sent', () => {
-  const send = jest.fn();
-  window.ttq = { track: send, identify: jest.fn() };
-  track('AddToCart', { ...productEvent, contents: [] });
-  track('ViewContent', { ...productEvent, value: NaN });
-  track('AddToCart', { ...productEvent, contents: [
-    ...productEvent.contents, { ...productEvent.contents[0], content_id: '' },
-  ] });
-  expect(send).not.toHaveBeenCalled();
-});
-
-test('checkout and registration payloads are unchanged', () => {
-  const send = jest.fn();
-  window.ttq = { track: send, identify: jest.fn() };
-  track('InitiateCheckout', productEvent);
-  expect(send).toHaveBeenLastCalledWith('InitiateCheckout', productEvent);
-  const registration = { contents: [], value: 0, currency: 'SAR' };
-  track('CompleteRegistration', registration);
-  expect(send).toHaveBeenLastCalledWith('CompleteRegistration', registration);
+test('rejects invalid IDs, prices and quantities', () => {
+  expect(trackProductEvent('view_item', { ...product, _id: '' })).toBe(false);
+  expect(trackProductEvent('view_item', { ...product, salePrice: NaN })).toBe(false);
+  expect(trackProductEvent('add_to_cart', product, 0)).toBe(false);
+  expect(trackProductEvent('add_to_cart', product, 1.5)).toBe(false);
+  expect(window.dataLayer).toBeUndefined();
 });

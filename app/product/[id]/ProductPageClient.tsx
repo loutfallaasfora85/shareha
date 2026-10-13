@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useSnapProductView } from "../../lib/useSnapProductView";
+import { useProductView } from "../../lib/useProductView";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { IoArrowForward, IoShareSocial, IoHomeOutline, IoChevronBack, IoCartOutline } from "react-icons/io5";
@@ -23,15 +24,11 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
 
   const product = initialProduct;
   useSnapProductView(product);
+  useProductView(product);
 
   const addProductToCart = (product: Product, qty: number) => {
     addItem(product, qty);
   };
-
-  useEffect(() => {
-    if (!product) return;
-    if (!product._id?.trim()) return;
-  }, [product?._id]);
 
   if (!product)
     return (
