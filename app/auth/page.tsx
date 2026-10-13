@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Mail, CheckCircle2, Pencil, ArrowLeft, RefreshCw, AlertCircle, ArrowRight } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
-import { identify, track } from "../lib/useTikTokEvents";
 
 const COOLDOWN_SECONDS = 60;
 
