@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import TikTokPixel from "./components/TikTokPixel";
 import SnapPixel from "./components/SnapPixel";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
@@ -195,7 +194,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </>
         )}
 
-        <TikTokPixel />
+        {/* <TikTokPixel /> */}
       </head>
       <body
         className="antialiased"
