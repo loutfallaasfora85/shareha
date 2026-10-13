@@ -1232,10 +1232,6 @@ function AuthPageInner() {
 
   const handleSuccess = (user: object) => {
     setUser(user as Parameters<typeof setUser>[0]);
-    if (tab === "register") {
-      identify();
-      track("CompleteRegistration", { contents: [], value: 0, currency: "SAR" });
-    }
     try { sessionStorage.removeItem(REGISTER_STORAGE_KEY); } catch { /* ignore */ }
     const redirect = searchParams.get("redirect");
     const safe =
