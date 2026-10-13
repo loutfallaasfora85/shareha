@@ -1,5 +1,7 @@
 "use client";
 
+import { TIKTOK_PIXEL_IDS } from './tikTokConfig';
+
 declare global {
   interface Window {
     ttq?: {
@@ -55,10 +57,6 @@ function normalisePhone(phone: string): string {
 }
 
 // ─── Pixel IDs (must match TikTokPixel.tsx) ───────────────────────────────────
-const PIXEL_IDS = [
-  process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID   || "DB4IAG3C77U4O1M3UD7G",
-  process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID_2 || "DB5PRVRC77U6DDDLCHRO",
-].filter(Boolean);
 
 // ─── Helper: call a method on ALL loaded pixel instances ─────────────────────
 // When multiple pixels are loaded with ttq.load(), ttq.track/identify broadcast
@@ -69,7 +67,7 @@ function forEachPixel(cb: (tracker: NonNullable<Window["ttq"]>) => void): void {
   const ttq = window.ttq;
   if (typeof ttq.instance === "function") {
     // Fire on every loaded pixel by instance
-    PIXEL_IDS.forEach((id) => {
+    TIKTOK_PIXEL_IDS.forEach((id) => {
       try {
         const inst = ttq.instance!(id);
         if (inst) cb(inst);
@@ -156,7 +154,24 @@ function track(event: string, data: EventData): void {
       return;
     }
 
-    const payload = { ...data, contents: validContents };
+    // Catalog fields belong on the event as well as individual line items.
+    // Limit this normalization to product views and cart additions.
+    const isCatalogEvent = event === "ViewContent" || event === "AddToCart";
+    if (isCatalogEvent && (
+      validContents.length === 0 || validContents.length !== data.contents.length ||
+      !Number.isFinite(data.value) || data.value < 0
+    )) return;
+
+    const payload = isCatalogEvent ? {
+      ...data,
+      contents: validContents,
+      content_type: validContents[0].content_type,
+      content_ids: validContents.map((item) => item.content_id),
+      ...(validContents.length === 1 ? {
+        content_id: validContents[0].content_id,
+        content_name: validContents[0].content_name,
+      } : {}),
+    } : { ...data, contents: validContents };
     forEachPixel((tracker) => { tracker.track(event, payload); });
   } catch {
     // A failed analytics call must never interrupt the shopping experience.
