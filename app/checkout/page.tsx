@@ -94,22 +94,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!mounted || items.length === 0) return;
 
-    // Pass real customer data for advanced matching.
-    // identify() validates format & only hashes valid, non-empty values.
-    identify(customer.email, customer.phone, user?._id ?? user?.id);
-
     const checkoutValue = Math.max(0, totalPrice() - discount);
-    track("InitiateCheckout", {
-      contents: items.map(i => ({
-        content_id: i.product._id.trim(),
-        content_type: "product" as const,
-        content_name: i.product.name,
-        quantity: i.qty,
-        price: i.product.salePrice ?? i.product.originalPrice ?? i.product.price ?? 0,
-      })).filter(c => c.content_id !== ""),
-      value: checkoutValue,
-      currency: "SAR",
-    });
     // Snap START_CHECKOUT
     try {
       initializeSnapPixel()('track', 'START_CHECKOUT', {
@@ -136,13 +121,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const fireAddPaymentInfo = (method: typeof selectedPayment) => {
-    if (!method) return;
-    track("AddPaymentInfo", {
-      contents: items.map(i => ({ content_id: i.product._id, content_type: "product" as const, content_name: i.product.name })),
-      value: finalTotal,
-      currency: "SAR",
-    });
+  const fireAddPaymentInfo = (_method: typeof selectedPayment) => {
+    // payment tracking placeholder
   };
 
   const applyCoupon = () => {
