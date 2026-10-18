@@ -23,17 +23,17 @@ export default async function Footer() {
               <Image src="/commerce.webp" alt="السجل التجاري" width={40} height={40} className="object-contain rounded-md shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-gray-700">السجل التجاري</span>
-                <span className="text-xs text-gray-500 font-mono" dir="ltr">7055339530</span>
+                <span className="text-xs text-gray-500 font-mono" dir="ltr">7055426618</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <a href="https://qr.saudibusiness.gov.sa/viewcr?nCrNumber=v2eosJ+qA5kQRXufqrwSSw==" target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <Image src="/work.webp" alt="شهادة توثيق" width={40} height={40} className="object-contain rounded-md shrink-0" />
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-gray-700">شهادة توثيق</span>
                 <span className="text-xs text-gray-500">مركز الاعمال</span>
                 <span className="text-xs text-gray-500 font-mono" dir="ltr">0000331984</span>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Contact details */}
