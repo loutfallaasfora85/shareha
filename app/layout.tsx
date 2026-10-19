@@ -216,7 +216,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* Saudi Business Verify Seal */}
         <div
           className="sbc-verify-seal"
-          data-token="ePOHrYY/KXYJBJNJTGCRQWNs21JGz910"
+          data-token="eFdHY0YrK3Y3RlNuTGtMQWN3V21Jdz09"
           data-position="bottom-left"
         />
         <Script
