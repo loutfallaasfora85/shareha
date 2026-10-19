@@ -220,7 +220,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           data-position="bottom-left"
         />
         <Script
-          src="https://eauthenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
+          src="https://authenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
           strategy="lazyOnload"
         />
         <Analytics />
