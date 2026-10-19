@@ -8,7 +8,7 @@ import { getCompany } from "./lib/getCompany";
 import { Analytics } from "@vercel/analytics/next";
 
 // Single source of truth for the production domain
-const SITE_URL = "https://www.alshariyaa.com";
+const SITE_URL = "https://alshariyah.com";
 
 export const viewport: Viewport = {
   themeColor: "#04454A",
@@ -213,7 +213,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <ClientLayout footer={<Footer />} whatsapp={c.whatsapp}>
           {children}
         </ClientLayout>
-        {/* Saudi Business seal disabled */}
+        {/* Saudi Business Verify Seal */}
+        <div
+          className="sbc-verify-seal"
+          data-token="ePOHrYY/KXYJBJNJTGCRQWNs21JGz910"
+          data-position="bottom-left"
+        />
+        <Script
+          src="https://authenticate.saudibusiness.gov.sa/EAuthSealApi/seal.js"
+          strategy="lazyOnload"
+        />
         <Analytics />
       </body>
     </html>
