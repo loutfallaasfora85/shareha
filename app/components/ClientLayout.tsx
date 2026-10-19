@@ -28,7 +28,7 @@ export default function ClientLayout({
       {children}
       {!hideChrome && !isAuth && footer}
       {!hideChrome && !isAuth && <WhatsappButton whatsapp={whatsapp} />}
-      {!hideChrome && !isAuth && <TrustedBadge />}
+      {/* {!hideChrome && !isAuth && <TrustedBadge />} */}
       {!hideChrome && !isAuth && <AddToCartPopup />}
     </AuthProvider>
   );
