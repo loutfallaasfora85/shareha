@@ -6,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // CSP الثابت يُبنى مرة واحدة عند startup
 const STATIC_CSP = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://maps.googleapis.com https://js.sentry-cdn.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://*.googleadservices.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.google.com https://analytics.tiktok.com https://sc-static.net https://tr.snapchat.com https://*.snapchat.com${isDev ? ' https://va.vercel-scripts.com' : ''}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://maps.googleapis.com https://js.sentry-cdn.com https://www.google-analytics.com https://www.googletagmanager.com https://www.googleadservices.com https://*.googleadservices.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.google.com https://analytics.tiktok.com https://sc-static.net https://tr.snapchat.com https://*.snapchat.com https://eauthenticate.saudibusiness.gov.sa${isDev ? ' https://va.vercel-scripts.com' : ''}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' blob: data: https: http://localhost:5000",
   "font-src 'self' https://fonts.gstatic.com",
