@@ -21,7 +21,27 @@ const resolveImg = (src: string) => src?.startsWith("http") ? src : `${API}${src
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, setCustomer, clear } = useCartStore();
+  const { items: allItems, setCustomer, clear } = useCartStore();
+
+  // لو جاي من البوب أب "إتمام الطلب"، نعمل order للمنتج ده بس
+  const [singleProductId, setSingleProductId] = useState<string | null>(null);
+  useEffect(() => {
+    const id = sessionStorage.getItem("checkout_single_product_id");
+    if (id) {
+      setSingleProductId(id);
+      sessionStorage.removeItem("checkout_single_product_id");
+    }
+  }, []);
+
+  const items = singleProductId
+    ? allItems.filter(i => i.product._id === singleProductId)
+    : allItems;
+
+  const totalPrice = () =>
+    items.reduce(
+      (sum, i) => sum + (i.product.salePrice ?? i.product.originalPrice ?? (i.product as { price?: number }).price ?? 0) * i.qty,
+      0
+    );
   const { fetchCompany } = useCompanyStore();
   const [mounted, setMounted] = useState(false);
   const { blocked, fmtTime, recordAttempt } = useRateLimit();

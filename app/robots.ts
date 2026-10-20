@@ -3,6 +3,24 @@ import { MetadataRoute } from "next";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
+      // Block aggressive commercial scrapers that consume quota
+      {
+        userAgent: [
+          "AhrefsBot",
+          "SemrushBot",
+          "MJ12bot",
+          "DotBot",
+          "PetalBot",
+          "Bytespider",
+          "DataForSeoBot",
+          "Baiduspider",
+          "YandexBot",
+          "Sogou web spider",
+          "ZoominfoBot",
+          "Seekport",
+        ],
+        disallow: ["/"],
+      },
       // Googlebot, Googlebot-Image, Storebot-Google, AdsBot: full access to products and images
       {
         userAgent: [

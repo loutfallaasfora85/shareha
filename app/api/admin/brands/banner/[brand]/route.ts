@@ -10,6 +10,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ bra
     forwardCookies(req, { method: "POST", body: formData })
   );
   revalidateTag("brands-settings");
+  revalidateTag("home_sections");
+  revalidateTag("products");
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }
@@ -22,6 +24,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ b
     forwardCookies(req, { method: "DELETE", body, headers: { "Content-Type": "application/json" } })
   );
   revalidateTag("brands-settings");
+  revalidateTag("home_sections");
+  revalidateTag("products");
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }

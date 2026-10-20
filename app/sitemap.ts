@@ -41,8 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let productUrls: MetadataRoute.Sitemap = [];
   try {
     const res = await fetch(`${BACKEND_URL}/api/products?limit=500&fields=_id,updatedAt`, {
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(5000),
+      next: { revalidate: 86400 },
+      signal: AbortSignal.timeout(15000),
     });
     if (res.ok) {
       const products: { _id: string; updatedAt?: string }[] = await res.json();

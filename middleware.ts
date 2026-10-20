@@ -3,6 +3,9 @@ import type { NextRequest } from 'next/server';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+// Block known aggressive scrapers that consume Edge bandwidth and CPU
+const BLOCKED_BOT_REGEX = /bytespider|petalbot|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|dataforseobot|baiduspider|yandexbot|sogou|zoominfo|seekport/i;
+
 // CSP الثابت يُبنى مرة واحدة عند startup
 const STATIC_CSP = [
   "default-src 'self'",
@@ -30,6 +33,12 @@ const SECURITY_HEADERS: [string, string][] = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Block aggressive commercial crawlers instantly at the Edge
+  const userAgent = request.headers.get('user-agent') || '';
+  if (BLOCKED_BOT_REGEX.test(userAgent)) {
+    return new NextResponse(null, { status: 403 });
+  }
 
   // صد محاولات فحص البوتات والمسارات الضارة فوراً عند الـ Edge بدون تشغيل Serverless Function
   const lowerPath = pathname.toLowerCase();
@@ -73,7 +82,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      source: '/((?!_next/static|_next/image|favicon.ico|apple-icon.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|eot)).*)',
+      source: '/((?!_next/static|_next/image|api/|favicon.ico|apple-icon.png|manifest.json|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|css|js|woff2?|ttf|otf|eot|pdf|lottie)).*)',
       missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' },

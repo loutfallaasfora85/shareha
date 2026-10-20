@@ -10,7 +10,9 @@ const IDS = [
   "6a94389df64d29e186524b77",
 ];
 
-const BACKEND = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "https://alshareehaa-backend.vercel.app";
+const BACKEND = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+let cachedMostDemandedBackup: Product[] = [];
 
 // Fix 7: request واحدة بدل 4 — /api/products/by-ids?ids=id1,id2,id3,id4
 async function getMostDemanded(): Promise<Product[]> {
@@ -18,13 +20,17 @@ async function getMostDemanded(): Promise<Product[]> {
     const idsParam = IDS.join(",");
     const res = await fetch(`${BACKEND}/api/products/by-ids?ids=${idsParam}`, {
       next: { revalidate: 3600, tags: ["products"] },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(15000),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return cachedMostDemandedBackup.length > 0 ? cachedMostDemandedBackup : [];
     const data = await res.json();
-    return Array.isArray(data) ? data : [];
+    if (Array.isArray(data) && data.length > 0) {
+      cachedMostDemandedBackup = data;
+      return data;
+    }
+    return cachedMostDemandedBackup.length > 0 ? cachedMostDemandedBackup : [];
   } catch {
-    return [];
+    return cachedMostDemandedBackup.length > 0 ? cachedMostDemandedBackup : [];
   }
 }
 

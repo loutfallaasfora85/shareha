@@ -10,6 +10,8 @@ export async function PATCH(req: NextRequest) {
     body: JSON.stringify(body),
   }));
   revalidateTag("brands-settings");
+  revalidateTag("home_sections");
+  revalidateTag("products");
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
 }

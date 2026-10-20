@@ -19,49 +19,76 @@ type BrandSection = {
 
 const BACKEND = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+// In-memory backup to prevent homepage products from vanishing if backend is sleeping or timing out
+let cachedSectionsBackup: BrandSection[] = [];
+
 async function getSections(): Promise<BrandSection[]> {
   try {
     // 1. Try single consolidated endpoint (1 backend request instead of 1 + N)
     const singleRes = await fetch(`${BACKEND}/api/products/home-sections`, {
       next: { revalidate: 3600, tags: ["home_sections", "products"] },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(15000),
     });
     if (singleRes.ok) {
       const data = await singleRes.json();
-      if (Array.isArray(data) && data.length > 0) return data;
+      if (Array.isArray(data) && data.length > 0) {
+        const processed = data.map((sec: BrandSection) => ({
+          ...sec,
+          products: sortProducts(sec.products || [], true).slice(0, 4),
+        })).filter((sec: BrandSection) => sec.products.length > 0);
+
+        if (processed.length > 0) {
+          cachedSectionsBackup = processed;
+          return processed;
+        }
+      }
     }
-  } catch {
-    // Fallback below
+  } catch (err) {
+    console.warn("home-sections consolidated fetch failed or timed out, trying fallback...", err);
   }
 
   try {
     // 2. Fallback to existing settings + multi-product fetch
     const settingsRes = await fetch(`${BACKEND}/api/admin/brands/home-settings`, {
       next: { revalidate: 3600, tags: ["brands-settings"] },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(15000),
     });
-    if (!settingsRes.ok) return [];
+    if (!settingsRes.ok) {
+      return cachedSectionsBackup.length > 0 ? cachedSectionsBackup : [];
+    }
 
     const settings: BrandSetting[] = await settingsRes.json();
     const visible = settings.filter((s) => s.showInHome).sort((a, b) => a.order - b.order);
-    if (visible.length === 0) return [];
+    if (visible.length === 0) {
+      return cachedSectionsBackup.length > 0 ? cachedSectionsBackup : [];
+    }
 
     const results = await Promise.all(
       visible.map(async (s) => {
-        const res = await fetch(
-          `${BACKEND}/api/products?brand=${encodeURIComponent(s.brand)}`,
-          { next: { revalidate: 3600, tags: ["products"] }, signal: AbortSignal.timeout(3000) }
-        );
-        const data = res.ok ? await res.json() : [];
-        const raw: Product[] = Array.isArray(data) ? data : Array.isArray(data.products) ? data.products : [];
-        const products = sortProducts(raw, true).slice(0, 4);
-        return { brand: s.brand, products, bannerImages: s.bannerImages || [] };
+        try {
+          const res = await fetch(
+            `${BACKEND}/api/products?brand=${encodeURIComponent(s.brand)}`,
+            { next: { revalidate: 3600, tags: ["products"] }, signal: AbortSignal.timeout(15000) }
+          );
+          const data = res.ok ? await res.json() : [];
+          const raw: Product[] = Array.isArray(data) ? data : Array.isArray(data.products) ? data.products : [];
+          const products = sortProducts(raw, true).slice(0, 4);
+          return { brand: s.brand, products, bannerImages: s.bannerImages || [] };
+        } catch {
+          return { brand: s.brand, products: [], bannerImages: s.bannerImages || [] };
+        }
       })
     );
 
-    return results.filter((s) => s.products.length > 0);
-  } catch {
-    return [];
+    const valid = results.filter((s) => s.products.length > 0);
+    if (valid.length > 0) {
+      cachedSectionsBackup = valid;
+      return valid;
+    }
+    return cachedSectionsBackup.length > 0 ? cachedSectionsBackup : [];
+  } catch (err) {
+    console.error("Failed to load home category sections:", err);
+    return cachedSectionsBackup.length > 0 ? cachedSectionsBackup : [];
   }
 }
 
@@ -100,6 +127,7 @@ export default async function HomeCategorySections() {
               </div>
               <Link
                 href={`/all-products?brand=${encodeURIComponent(sec.brand)}`}
+                prefetch={false}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-opacity hover:opacity-80"
                 style={{ background: "rgba(40,64,100,0.1)", border: "1px solid rgba(40,64,100,0.25)" }}
               >

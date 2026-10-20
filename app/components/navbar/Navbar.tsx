@@ -81,7 +81,7 @@ export default function Navbar() {
                 {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
 
-              <Link href="/" className="flex items-center gap-2 shrink-0">
+              <Link href="/" prefetch={false} className="flex items-center gap-2 shrink-0">
                 <Image
                   src="/logo.webp"
                   alt="logo"
@@ -101,6 +101,7 @@ export default function Navbar() {
                   <Link
                     key={item.label}
                     href={item.href}
+                    prefetch={false}
                     className={`relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group ${
                       isActive
                         ? "text-[#284064] bg-[#F6F8FC]"
@@ -141,6 +142,7 @@ export default function Navbar() {
               {/* Cart */}
               <Link
                 href="/cart"
+                prefetch={false}
                 aria-label="السلة"
                 className="relative flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-gray-500 hover:text-[#284064] hover:bg-[#F6F8FC] transition-colors"
               >

@@ -10,21 +10,25 @@ const BACKEND =
   "http://localhost:5000";
 const SITE_URL = "https://www.alshariyaa.com";
 
+let cachedReviewsBackup: any[] = [];
+
 async function getReviews() {
   try {
     const res = await fetch(`${BACKEND}/api/admin/reviews`, {
       next: { revalidate: 3600, tags: ["reviews"] },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(15000),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return cachedReviewsBackup.length > 0 ? cachedReviewsBackup : [];
     const data = await res.json();
-    return Array.isArray(data)
+    const result = Array.isArray(data)
       ? data
       : Array.isArray(data?.reviews)
       ? data.reviews
       : [];
+    if (result.length > 0) cachedReviewsBackup = result;
+    return result;
   } catch {
-    return [];
+    return cachedReviewsBackup.length > 0 ? cachedReviewsBackup : [];
   }
 }
 

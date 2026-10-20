@@ -34,7 +34,7 @@ export async function getCompanyData(): Promise<CompanyData> {
   try {
     const res = await fetch(`${BACKEND}/api/admin/company/public`, {
       next: { revalidate: 300, tags: ["company"] },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return {};
     return await res.json();

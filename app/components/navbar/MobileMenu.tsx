@@ -43,6 +43,7 @@ export default function MobileMenu({ items, isOpen, onClose, pathname }: MobileM
             <Link
               key={item.label}
               href={item.href}
+              prefetch={false}
               onClick={onClose}
               className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
                 isActive
@@ -57,8 +58,6 @@ export default function MobileMenu({ items, isOpen, onClose, pathname }: MobileM
           );
         })}
       </div>
-
-      <div className="h-2" />
     </div>
   );
 }

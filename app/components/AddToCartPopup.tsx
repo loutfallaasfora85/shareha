@@ -54,7 +54,15 @@ export default function AddToCartPopup() {
   // Cleanup on unmount
   useEffect(() => () => clearAll(), [clearAll]);
 
-  const handleCheckout = () => { hide(); window.scrollTo(0, 0); router.push("/checkout"); };
+  const handleCheckout = () => {
+    // حفظ المنتج المُضاف حالياً عشان الـ checkout يعمل order له بس
+    if (product) {
+      sessionStorage.setItem("checkout_single_product_id", product.id);
+    }
+    hide();
+    window.scrollTo(0, 0);
+    router.push("/checkout");
+  };
   const handleCart = () => { hide(); window.scrollTo(0, 0); router.push("/cart"); };
 
   return (

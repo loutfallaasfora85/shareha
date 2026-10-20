@@ -100,7 +100,7 @@ export default function CategoryLandingClient({ title, emoji, subCategories, fil
               transition={{ duration: 0.4 }}
               className="flex items-center gap-1.5 text-[11px] sm:text-xs text-white/50 mb-8 sm:mb-10"
             >
-              <Link href="/" className="hover:text-white/90 transition flex items-center gap-1">
+              <Link href="/" prefetch={false} className="hover:text-white/90 transition flex items-center gap-1">
                 <IoHomeOutline size={13} />
                 الرئيسية
               </Link>
@@ -191,6 +191,7 @@ export default function CategoryLandingClient({ title, emoji, subCategories, fil
               >
                 <Link
                   href={cat.href}
+                  prefetch={false}
                   className="group relative flex flex-col items-center gap-3 bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-100/40 transition-all duration-300"
                 >
                   <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center text-2xl sm:text-3xl group-hover:from-teal-100 group-hover:to-emerald-100 transition-all shadow-sm group-hover:scale-110 group-hover:shadow-md duration-300">
@@ -255,6 +256,7 @@ export default function CategoryLandingClient({ title, emoji, subCategories, fil
               </div>
               <Link
                 href="/"
+                prefetch={false}
                 className="mt-2 text-sm font-bold text-teal-600 hover:text-teal-800 flex items-center gap-1.5 bg-teal-50 px-5 py-2.5 rounded-full transition-all hover:shadow-md hover:shadow-teal-100"
               >
                 <IoArrowForward size={14} />

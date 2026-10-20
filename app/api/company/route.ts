@@ -6,8 +6,8 @@ import { getBackend } from "../admin/_lib";
 export async function GET() {
   try {
     const res = await fetch(`${getBackend()}/api/admin/company/public`, {
-      next: { revalidate: 60 },
-      signal: AbortSignal.timeout(3000),
+      next: { revalidate: 86400, tags: ["company"] },
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return NextResponse.json({}, { status: res.status });
     const data = await res.json();

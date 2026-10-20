@@ -231,7 +231,7 @@ export default function CartPage() {
             <span className="text-base font-black" style={{ color: "var(--color-2)" }}>السلة</span>
           </div>
 
-          <Link href="/" className="w-9 h-9 rounded-xl border flex items-center justify-center transition" style={{ background: "var(--color-1)", borderColor: "var(--color-4)" }}>
+          <Link href="/" prefetch={false} className="w-9 h-9 rounded-xl border flex items-center justify-center transition" style={{ background: "var(--color-1)", borderColor: "var(--color-4)" }}>
             <Home className="w-4 h-4" style={{ color: "var(--color-2)" }} />
           </Link>
         </div>
@@ -292,6 +292,7 @@ export default function CartPage() {
                     <div className="flex gap-2 flex-wrap">
                       <Link
                         href="/auth?redirect=/cart"
+                        prefetch={false}
                         className="text-xs font-bold border px-3 py-1.5 transition-colors"
                         style={{ color: "var(--color-2)", borderColor: "var(--color-2)", borderRadius: 0 }}
                       >
@@ -299,6 +300,7 @@ export default function CartPage() {
                       </Link>
                       <Link
                         href="/auth?tab=register&redirect=/cart"
+                        prefetch={false}
                         className="text-xs font-bold border px-3 py-1.5 transition-colors"
                         style={{ color: "var(--color-4)", borderColor: "var(--color-4)", borderRadius: 0 }}
                       >

@@ -41,12 +41,12 @@ export default function CategoryHero({ label, parentLabel, parentHref, productCo
           transition={{ duration: 0.4 }}
           className="flex items-center gap-1.5 text-[11px] sm:text-xs text-black/40 mb-8"
         >
-          <Link href="/" className="hover:text-black transition flex items-center gap-1">
+          <Link href="/" prefetch={false} className="hover:text-black transition flex items-center gap-1">
             <IoHomeOutline size={12} />
             الرئيسية
           </Link>
           <IoChevronBack size={10} />
-          <Link href={parentHref} className="hover:text-black transition">{parentLabel}</Link>
+          <Link href={parentHref} prefetch={false} className="hover:text-black transition">{parentLabel}</Link>
           <IoChevronBack size={10} />
           <span className="text-[#284064] font-semibold">{label}</span>
         </motion.nav>
