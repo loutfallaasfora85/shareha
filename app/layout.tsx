@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import SnapPixel from "./components/SnapPixel";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
@@ -193,6 +194,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </>
         )}
 
+        {/* Snap Pixel Base Code — ID: fa4cbf22-9c14-43d5-a2e6-0a1910358f11 */}
+        <Script id="snap-pixel-base" strategy="afterInteractive">
+          {`(function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+{a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+r.src=n;var u=t.getElementsByTagName(s)[0];
+u.parentNode.insertBefore(r,u);})(window,document,
+'https://sc-static.net/scevent.min.js');
+snaptr('init','fa4cbf22-9c14-43d5-a2e6-0a1910358f11',{});`}
+        </Script>
+
       </head>
       <body
         className="antialiased"
@@ -208,6 +220,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
 
+        <SnapPixel />
         <ClientLayout footer={<Footer />} whatsapp={c.whatsapp}>
           {children}
         </ClientLayout>
