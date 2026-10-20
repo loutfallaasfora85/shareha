@@ -13,7 +13,7 @@ import CheckoutPayment from "./CheckoutPayment";
 import CustomerSection, { validateCustomer } from "./CustomerSection";
 import type { CustomerData } from "./CustomerSection";
 import { useAuthStore } from "../store/authStore";
-import { initializeSnapPixel } from "../lib/snapPixel";
+import { trackSnap } from "../lib/snapPixel";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -117,10 +117,10 @@ export default function CheckoutPage() {
     const checkoutValue = Math.max(0, totalPrice() - discount);
     // Snap START_CHECKOUT
     try {
-      initializeSnapPixel()('track', 'START_CHECKOUT', {
+      trackSnap('START_CHECKOUT', {
         price: checkoutValue,
         currency: 'SAR',
-        item_ids: items.map(i => i.product._id).filter(id => id?.trim()),
+        item_ids: items.map(i => i.product._id).filter((id): id is string => !!id?.trim()),
         number_items: items.reduce((s, i) => s + i.qty, 0),
       });
     } catch { /* analytics must not break checkout */ }
