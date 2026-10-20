@@ -51,6 +51,20 @@ export function trackSnap(event: SnapEvent, params?: SnapEventParams): boolean {
   }
 }
 
+/**
+ * Convenience wrapper for the PURCHASE event specifically,
+ * matching the shape expected by checkout/verify.
+ */
+export function trackSnapPurchase(params: {
+  price: number;
+  currency: string;
+  transaction_id: string;
+  item_ids?: string[];
+  number_items?: number;
+}): boolean {
+  return trackSnap('PURCHASE', params as SnapEventParams);
+}
+
 import type { Product } from '../components/products/types';
 
 /**
