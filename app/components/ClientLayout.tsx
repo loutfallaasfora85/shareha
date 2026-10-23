@@ -5,6 +5,7 @@ import WhatsappButton from "./WhatsappButton";
 import TrustedBadge from "./TrustedBadge";
 import AddToCartPopup from "./AddToCartPopup";
 import AuthProvider from "./auth/AuthProvider";
+import SnapPixel from "./SnapPixel";
 
 export default function ClientLayout({
   children,
@@ -24,6 +25,7 @@ export default function ClientLayout({
 
   return (
     <AuthProvider>
+      <SnapPixel />
       {!hideChrome && <Navbar />}
       {children}
       {!hideChrome && !isAuth && footer}

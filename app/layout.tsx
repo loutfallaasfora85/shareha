@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import SnapPixel from "./components/SnapPixel";
 import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import Footer from "./components/Footer";
@@ -220,7 +219,6 @@ snaptr('init','fa4cbf22-9c14-43d5-a2e6-0a1910358f11',{});`}
           />
         </noscript>
 
-        <SnapPixel />
         <ClientLayout footer={<Footer />} whatsapp={c.whatsapp}>
           {children}
         </ClientLayout>
