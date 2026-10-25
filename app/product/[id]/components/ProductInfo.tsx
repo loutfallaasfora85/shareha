@@ -100,7 +100,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full`} style={{ background: product.inStock ? "var(--color-4)" : "#f87171" }} />
         <span className="text-xs font-bold" style={{ color: product.inStock ? "var(--color-4)" : "#ef4444" }}>
-          {product.inStock ? "متوفر في المخزون" : "غير متوفر حالياً"}
+          {product.inStock ? "متوفر في المخزون" : "نفذت الكمية"}
         </span>
       </div>
 
@@ -109,6 +109,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
         <span className="text-xs font-bold" style={{ color: "var(--color-3)" }}>الكمية:</span>
         <div className="flex items-center rounded-xl overflow-hidden border" style={{ borderColor: "var(--color-4)" }}>
           <button
+            disabled={!product.inStock}
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             className="w-9 h-9 flex items-center justify-center transition"
             style={{ color: "var(--color-3)" }}
@@ -117,6 +118,7 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
           </button>
           <span className="w-10 text-center text-sm font-black" style={{ color: "var(--color-2)" }}>{qty}</span>
           <button
+            disabled={!product.inStock}
             onClick={() => setQty((q) => q + 1)}
             className="w-9 h-9 flex items-center justify-center transition"
             style={{ color: "var(--color-3)" }}
@@ -129,22 +131,22 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
       {/* CTA Buttons */}
       <div className="flex flex-col gap-3">
         <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={() => onAddToCart(qty)}
+          whileTap={product.inStock ? { scale: 0.97 } : {}}
+          onClick={() => product.inStock && onAddToCart(qty)}
           disabled={!product.inStock}
           className="cart-btn disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <IoCartOutline size={18} />
-          {addedToCart ? "تمت الإضافة ✓" : "أضف للسلة"}
+          {!product.inStock ? "نفذت الكمية" : addedToCart ? "تمت الإضافة ✓" : "أضف للسلة"}
         </motion.button>
         <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={() => onBuyNow(qty)}
+          whileTap={product.inStock ? { scale: 0.97 } : {}}
+          onClick={() => product.inStock && onBuyNow(qty)}
           disabled={!product.inStock}
-          className="w-full font-bold text-sm py-3.5 rounded-2xl transition disabled:opacity-50 border"
-          style={{ borderColor: "var(--color-4)", color: "var(--color-2)" }}
+          className="w-full font-bold text-sm py-3.5 rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed border"
+          style={{ borderColor: "var(--color-4)", color: !product.inStock ? "#9ca3af" : "var(--color-2)" }}
         >
-          اشتري الآن
+          {!product.inStock ? "غير متوفر للشراء" : "اشتري الآن"}
         </motion.button>
       </div>
 

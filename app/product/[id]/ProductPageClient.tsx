@@ -128,15 +128,17 @@ export default function ProductPageClient({ id, initialProduct }: { id: string; 
             </div>
           </div>
           <motion.button
-            whileTap={{ scale: 0.95 }}
+            whileTap={product.inStock ? { scale: 0.95 } : {}}
+            disabled={!product.inStock}
             onClick={() => {
+              if (!product.inStock) return;
               if (addedToCart) router.push("/cart");
               else { addProductToCart(product, 1); setAddedToCart(true); }
             }}
-            className="cart-btn w-full py-4 rounded-2xl flex items-center justify-center gap-2 text-base font-black"
+            className="cart-btn w-full py-4 rounded-2xl flex items-center justify-center gap-2 text-base font-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IoCartOutline size={20} />
-            {addedToCart ? "عرض السلة ✓" : "أضف للسلة"}
+            {!product.inStock ? "نفذت الكمية" : addedToCart ? "عرض السلة ✓" : "أضف للسلة"}
           </motion.button>
         </div>
       </div>

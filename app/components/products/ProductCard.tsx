@@ -57,7 +57,7 @@ export default function ProductCard({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (loading) return;
+    if (inStock === false || loading) return;
     setLoading(true);
 
     // addItem is synchronous (Zustand local store)
@@ -120,6 +120,20 @@ export default function ProductCard({
                 }
               >
                 {rank}
+              </div>
+            )}
+
+            {/* Out of stock badge */}
+            {inStock === false && (
+              <div
+                className="absolute top-2.5 left-2.5 z-30 px-2 py-1 rounded-md text-[10px] font-bold shadow-sm"
+                style={{
+                  background: "rgba(220, 38, 38, 0.9)",
+                  color: "#ffffff",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                نفذت الكمية
               </div>
             )}
 
@@ -229,52 +243,67 @@ export default function ProductCard({
             </div>
 
             {/* Cart button */}
-            <motion.button
-              onClick={handleAddToCart}
-              whileTap={{ scale: 0.97 }}
-              disabled={loading}
-              aria-label="أضف إلى السلة"
-              className={`cart-btn ${added ? "added" : ""}`}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {loading ? (
-                  <motion.span
-                    key="loading"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.15 }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  </motion.span>
-                ) : added ? (
-                  <motion.span
-                    key="done"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.18 }}
-                    className="flex items-center gap-2"
-                  >
-                    <IoCheckmarkCircle size={16} />
-                    تمت الإضافة
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="add"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.18 }}
-                    className="flex items-center gap-2"
-                  >
-                    <IoCartOutline size={16} />
-                    أضف للسلة
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            {inStock === false ? (
+              <button
+                type="button"
+                disabled
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                aria-label="نفذت الكمية"
+                className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-black bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed flex items-center justify-center gap-1.5 opacity-90 select-none"
+              >
+                نفذت الكمية
+              </button>
+            ) : (
+              <motion.button
+                onClick={handleAddToCart}
+                whileTap={{ scale: 0.97 }}
+                disabled={loading}
+                aria-label="أضف إلى السلة"
+                className={`cart-btn ${added ? "added" : ""}`}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {loading ? (
+                    <motion.span
+                      key="loading"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.15 }}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    </motion.span>
+                  ) : added ? (
+                    <motion.span
+                      key="done"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.18 }}
+                      className="flex items-center gap-2"
+                    >
+                      <IoCheckmarkCircle size={16} />
+                      تمت الإضافة
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="add"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.18 }}
+                      className="flex items-center gap-2"
+                    >
+                      <IoCartOutline size={16} />
+                      أضف للسلة
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            )}
           </div>
         </Link>
       </motion.div>
