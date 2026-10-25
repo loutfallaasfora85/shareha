@@ -130,24 +130,30 @@ export default function ProductInfo({ product, addedToCart, onAddToCart, onBuyNo
 
       {/* CTA Buttons */}
       <div className="flex flex-col gap-3">
-        <motion.button
-          whileTap={product.inStock ? { scale: 0.97 } : {}}
-          onClick={() => product.inStock && onAddToCart(qty)}
-          disabled={!product.inStock}
-          className="cart-btn disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <IoCartOutline size={18} />
-          {!product.inStock ? "نفذت الكمية" : addedToCart ? "تمت الإضافة ✓" : "أضف للسلة"}
-        </motion.button>
-        <motion.button
-          whileTap={product.inStock ? { scale: 0.97 } : {}}
-          onClick={() => product.inStock && onBuyNow(qty)}
-          disabled={!product.inStock}
-          className="w-full font-bold text-sm py-3.5 rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed border"
-          style={{ borderColor: "var(--color-4)", color: !product.inStock ? "#9ca3af" : "var(--color-2)" }}
-        >
-          {!product.inStock ? "غير متوفر للشراء" : "اشتري الآن"}
-        </motion.button>
+        {!product.inStock ? (
+          <div className="w-full py-4 rounded-2xl bg-gray-100 border border-gray-200 text-gray-500 font-black text-center text-sm cursor-not-allowed select-none shadow-sm flex items-center justify-center gap-2">
+            <span>نفذت الكمية - هذا المنتج غير متوفر للشراء حالياً</span>
+          </div>
+        ) : (
+          <>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => onAddToCart(qty)}
+              className="cart-btn"
+            >
+              <IoCartOutline size={18} />
+              {addedToCart ? "تمت الإضافة ✓" : "أضف للسلة"}
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => onBuyNow(qty)}
+              className="w-full font-bold text-sm py-3.5 rounded-2xl transition border hover:bg-gray-50"
+              style={{ borderColor: "var(--color-4)", color: "var(--color-2)" }}
+            >
+              اشتري الآن
+            </motion.button>
+          </>
+        )}
       </div>
 
       {/* Trust Bar */}
